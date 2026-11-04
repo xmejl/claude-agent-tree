@@ -120,11 +120,12 @@ test('the pane says when every port is in use, or node is missing', async ($, on
 test('the answer picks the views; anything unknown falls back to the pane', () => {
   const only = (view: { pane?: boolean; web?: boolean; window?: boolean }) => ({ pane: false, web: false, window: false, ...view })
   expect(parseChoice('Web page')).toEqual(only({ web: true }))
+  expect(parseChoice('Agents pane, Browser window')).toEqual(only({ pane: true, window: true }))
   expect(parseChoice('Agents pane, Edge window')).toEqual(only({ pane: true, window: true }))
   expect(parseChoice('something typed under Other')).toEqual(only({ pane: true }))
   expect(parseChoice('')).toEqual(only({ pane: true }))
   expect(optionsFor(false)).toEqual(['Agents pane', 'Web page'])
-  expect(optionsFor(true)).toEqual(['Agents pane', 'Web page', 'Edge window'])
+  expect(optionsFor(true)).toEqual(['Agents pane', 'Web page', 'Browser window'])
 })
 
 test('a tool call becomes one line: the tool and the first thing it was given', () => {
