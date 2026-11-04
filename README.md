@@ -37,7 +37,7 @@ Subagents: 12.4k in / 0.6k out
 
 3. Quit the Claude desktop app completely and open it again, so new sessions see the variable.
 
-4. Start a session in the **Code** tab. A question asks how you want to see the agents: the **Agents** pane, the **web page**, the **Edge window** (Windows only), or any mix. Run `/agent-tree` to choose again.
+4. Start a session in the **Code** tab. A question asks how you want to see the agents: the **Agents** pane, the **web page**, the **Browser window** (when a browser launcher is available), or any mix. Run `/agent-tree` to choose again.
 
 From the terminal CLI, you can load it for a single session instead:
 
@@ -55,7 +55,7 @@ claude --plugin-dir C:\projects\claude-agent-tree
 
 ### The web page
 
-The same tree is served as a live web page at **http://127.0.0.1:47821/?t=&lt;key&gt;**, in a monospaced font. The key is made by the server each time it starts; the pane, the status line and the Edge window carry the full link. Agents sit on one row per level, joined by wires; the wire of an agent that is working has dots running down it, from parent to child (they stop with `prefers-reduced-motion`). The mod starts a small Node server when the session starts and stops it with the session. If the port is in use it tries the next one, up to 47830, and the pane's last line says which address it took:
+The same tree is served as a live web page at **http://127.0.0.1:47821/?t=&lt;key&gt;**, in a monospaced font. The key is made by the server each time it starts; the pane, the status line and the browser window use the full link. Agents sit on one row per level, joined by wires; the wire of an agent that is working has dots running down it, from parent to child (they stop with `prefers-reduced-motion`). The mod starts a small Node server when the session starts and stops it with the session. If the port is in use it tries the next one, up to 47830, and the pane's last line says which address it took:
 
 ```
 Web: http://127.0.0.1:47822/?t=3f9a1c07d2b4e856 (47821 in use)
@@ -73,7 +73,7 @@ The terminal pane shows the same cost, rating and context, and the footer adds u
 
 When a subagent finishes, a toast (with its cost and rating) says so; a failed one also raises a system notification. An aborted one (usually your own Esc) only gets the toast.
 
-The server always runs; what you pick decides what is shown. **Web page** shows the address as a toast and in the status line. **Edge window** opens the page as its own window through Edge's app mode (`msedge --app=...`: no tabs, no address bar, with the Agent Tree icon in the title bar and the taskbar); it needs Edge, which comes with Windows 11, so the option is offered on Windows only. If you dismiss the question or type something else, the pane opens.
+The server always runs; what you pick decides what is shown. **Web page** shows the address as a toast and in the status line. **Browser window** uses Edge app mode on Windows, tries Chrome/Chromium/Edge app mode on macOS or Linux, and falls back to the system default browser when available. The option is offered only when a launcher is detected. The default-browser fallback may open a normal tab or address bar. If you dismiss the question or type something else, the pane opens.
 
 If every port is taken the line reads `Web: ports 47821-47830 in use`; without Node on the `PATH` it reads `Web: node not found`. The pane works the same either way. Each session gets its own server, so a second session takes the next free port.
 
@@ -113,7 +113,7 @@ src/state.ts                 shared constants and initial values
 src/format.ts                number and text formatters
 src/pricing.ts               list prices, context windows, cost of a request and the rating of a cost
 src/web/serve.ts             runs the page's server and pushes the tree to it
-src/web/window.ts            opens the page as an Edge app window
+src/web/window.ts            opens a browser app window or falls back to the default browser
 src/web/icon.ts              the page's icon (PNG, base64)
 src/web/server.ts            the Node server's source and its ports
 src/web/page.ts              the web page (HTML, CSS, JS) as a string
