@@ -23,7 +23,11 @@ export async function reveal($: EngineInterface) {
     $.ui.toast(`Agent Tree: ${url}`)
     $.ui.status(`Agent Tree: ${url}`)
   }
-  if (v.window) await openWindow($, url)
+  if (v.window && !await openWindow($, url) && !v.web && !v.pane) {
+    // No view became visible. Allow the next reveal to retry the failed launch.
+    await update($, view, x => ({ ...x, isShown: false }))
+    $.ui.toast('Agent Tree: Browser window could not be opened')
+  }
 }
 
 // asks how to see the agents, in the engine's own question dialog, and applies the answer
