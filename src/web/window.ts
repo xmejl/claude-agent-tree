@@ -35,7 +35,9 @@ export async function canOpenWindow($: EngineInterface): Promise<boolean> {
   return Boolean(await windowCommand($, 'http://127.0.0.1/'))
 }
 
-export async function openWindow($: EngineInterface, url: string) {
+export async function openWindow($: EngineInterface, url: string): Promise<boolean> {
   const argv = await windowCommand($, url)
-  if (argv) await $.process.run(argv).catch(() => undefined)
+  if (!argv) return false
+  const result = await $.process.run(argv).catch(() => undefined)
+  return result?.exitCode === 0
 }
